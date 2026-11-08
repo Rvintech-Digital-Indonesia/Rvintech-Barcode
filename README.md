@@ -23,7 +23,7 @@ function patterns. See [DOC.md](DOC.md) for API details and practical integratio
 ## Install
 
 ```sh
-go get github.com/pt-rvintech/rvintech-barcode
+go get github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode
 ```
 
 ## Quick start
@@ -34,7 +34,7 @@ package main
 import (
 	"os"
 
-	barcode "github.com/pt-rvintech/rvintech-barcode"
+	barcode "github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode"
 )
 
 func main() {

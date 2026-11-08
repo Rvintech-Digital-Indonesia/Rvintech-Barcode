@@ -6,10 +6,10 @@ import (
 	"image"
 	"io"
 
-	"github.com/pt-rvintech/rvintech-barcode/internal/code128"
-	"github.com/pt-rvintech/rvintech-barcode/internal/code39"
-	"github.com/pt-rvintech/rvintech-barcode/internal/qr"
-	"github.com/pt-rvintech/rvintech-barcode/internal/symbol"
+	"github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode/internal/code128"
+	"github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode/internal/code39"
+	"github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode/internal/qr"
+	"github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode/internal/symbol"
 )
 
 type Shape = symbol.Shape

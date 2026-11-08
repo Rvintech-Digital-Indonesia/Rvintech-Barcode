@@ -18,7 +18,7 @@ QR 编码器使用字节模式，暂不使用数字或字母数字模式进行�
 ## 安装
 
 ```sh
-go get github.com/pt-rvintech/rvintech-barcode
+go get github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode
 ```
 
 ## 快速开始
@@ -29,7 +29,7 @@ package main
 import (
 	"os"
 
-	barcode "github.com/pt-rvintech/rvintech-barcode"
+	barcode "github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode"
 )
 
 func main() {

@@ -7,7 +7,7 @@ The root Go package is `barcode`. Encoders return an immutable `*barcode.Code`, 
 ## Install
 
 ```sh
-go get github.com/pt-rvintech/rvintech-barcode
+go get github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode
 ```
 
 The module targets Go 1.23 or newer and has no external module dependencies.

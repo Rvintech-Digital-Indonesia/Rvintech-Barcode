@@ -7,7 +7,7 @@ Paket Go di root bernama `barcode`. Setiap encoder mengembalikan `*barcode.Code`
 ## Instalasi
 
 ```sh
-go get github.com/pt-rvintech/rvintech-barcode
+go get github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode
 ```
 
 Modul menargetkan Go 1.23 atau yang lebih baru dan tidak memiliki dependency modul eksternal.

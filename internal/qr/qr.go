@@ -2,7 +2,7 @@ package qr
 
 import (
 	"fmt"
-	"github.com/pt-rvintech/rvintech-barcode/internal/symbol"
+	"github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode/internal/symbol"
 )
 
 // Encode creates a QR Code Model 2 symbol in byte mode, versions 1 through 40.

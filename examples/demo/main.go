@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	barcode "github.com/pt-rvintech/rvintech-barcode"
+	barcode "github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode"
 )
 
 func main() {

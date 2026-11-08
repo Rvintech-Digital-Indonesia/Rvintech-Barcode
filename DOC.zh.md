@@ -7,7 +7,7 @@ Go 根包名为 `barcode`。编码函数返回 `*barcode.Code`，可重复渲染
 ## 安装
 
 ```sh
-go get github.com/pt-rvintech/rvintech-barcode
+go get github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode
 ```
 
 模块面向 Go 1.23 或更高版本，不依赖第三方 Go 模块。

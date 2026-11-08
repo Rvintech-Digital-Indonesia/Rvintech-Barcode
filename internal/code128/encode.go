@@ -2,7 +2,7 @@ package code128
 
 import (
 	"fmt"
-	"github.com/pt-rvintech/rvintech-barcode/internal/symbol"
+	"github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode/internal/symbol"
 	"strings"
 )
 

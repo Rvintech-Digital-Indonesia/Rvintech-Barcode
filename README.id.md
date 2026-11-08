@@ -1,5 +1,7 @@
 # Rvintech Barcode
 
+![Rvintech Barcode](asset/frame.png)
+
 Rvintech Barcode adalah library Go untuk membuat QR Code Model 2, Code 39, dan Code 128. Encoder dan renderer dibuat di
 proyek ini tanpa dependency library barcode pihak ketiga. Standard library Go dipakai untuk PNG serta membaca logo PNG,
 JPEG, dan GIF. Library dapat berjalan tanpa jaringan saat runtime.

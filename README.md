@@ -1,5 +1,7 @@
 # Rvintech Barcode
 
+![Rvintech Barcode](asset/frame.png)
+
 Rvintech Barcode is a dependency-free Go library for generating QR Code Model 2, Code 39, and Code 128 symbols. The
 module is maintained by PT Rvintech Digital Indonesia.
 

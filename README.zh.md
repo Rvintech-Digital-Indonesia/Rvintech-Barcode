@@ -1,5 +1,7 @@
 # Rvintech Barcode
 
+![Rvintech Barcode](asset/frame.png)
+
 Rvintech Barcode 是一个用于生成 QR Code Model 2、Code 39 和 Code 128 的 Go 库，由 PT Rvintech Digital Indonesia
 维护。编码器与渲染器由本项目自行实现，不依赖第三方条码生成库。PNG 输出及 PNG、JPEG、GIF 标志图片的读取仅使用 Go 标准库；运行时不需要网络。
 

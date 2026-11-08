@@ -8,15 +8,17 @@ JPEG, and GIF logo decoding. It requires no network access at runtime and has no
 
 ## Supported format
 
-| Format   | Current support                                                      |
-|----------|----------------------------------------------------------------------|
-| QR Code  | Automatic numeric, alphanumeric, and UTF-8 byte segmentation; versions 1–40, L/M/Q/H            |
-| Code 39  | Standard alphabet, optional modulo-43 checksum                       |
-| Code 128 | ASCII, automatic Code Set A/B/C switching, mandatory symbol checksum |
-| PNG      | All formats                                                          |
-| SVG      | All formats, with embedded PNG logo for QR Codes                     |
+| Format   | Current support                                                                      |
+|----------|--------------------------------------------------------------------------------------|
+| QR Code  | Automatic numeric, alphanumeric, and UTF-8 byte segmentation; versions 1–40, L/M/Q/H |
+| Code 39  | Standard alphabet, optional modulo-43 checksum                                       |
+| Code 128 | ASCII, automatic Code Set A/B/C switching, mandatory symbol checksum                 |
+| PNG      | All formats                                                                          |
+| SVG      | All formats, with embedded PNG logo for QR Codes                                     |
 
-The QR encoder supports all 40 Model 2 versions and four error-correction levels. It automatically selects and segments numeric, QR alphanumeric, and UTF-8 byte modes to reduce encoded size. Logo requests select level H and a version whose center avoids QR
+The QR encoder supports all 40 Model 2 versions and four error-correction levels. It automatically selects and segments
+numeric, QR alphanumeric, and UTF-8 byte modes to reduce encoded size. Logo requests select level H and a version whose
+center avoids QR
 function patterns. See [DOC.md](DOC.md) for API details and practical integration examples.
 
 ## Install
@@ -68,4 +70,4 @@ both PNG and SVG files.
 
 Documentation: [English](DOC.md) · [Bahasa Indonesia](DOC.id.md) · [简体中文](DOC.zh.md).
 README: [English](README.md) · [Bahasa Indonesia](README.id.md) · [简体中文](README.zh.md). The custom source-available
-license is in [LICENSE](LICENSE); it is not OSI-approved open-source and requires professional legal review.
+license is in [LICENSE](LICENSE.md); it is not OSI-approved open-source and requires professional legal review.

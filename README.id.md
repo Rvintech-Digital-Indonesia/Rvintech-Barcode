@@ -8,14 +8,15 @@ Dikelola oleh PT Rvintech Digital Indonesia.
 
 ## Format yang didukung
 
-| Format      | Dukungan                                                   |
-|-------------|------------------------------------------------------------|
-| QR Code     | Segmentasi otomatis mode numerik, alfanumerik, dan byte UTF-8; versi 1–40, L/M/Q/H           |
-| Code 39     | Alfabet standar dan checksum modulo-43 opsional            |
-| Code 128    | ASCII, perpindahan otomatis Code Set A/B/C, checksum wajib |
-| PNG dan SVG | Semua format; logo QR disematkan dalam SVG                 |
+| Format      | Dukungan                                                                           |
+|-------------|------------------------------------------------------------------------------------|
+| QR Code     | Segmentasi otomatis mode numerik, alfanumerik, dan byte UTF-8; versi 1–40, L/M/Q/H |
+| Code 39     | Alfabet standar dan checksum modulo-43 opsional                                    |
+| Code 128    | ASCII, perpindahan otomatis Code Set A/B/C, checksum wajib                         |
+| PNG dan SVG | Semua format; logo QR disematkan dalam SVG                                         |
 
-QR otomatis memilih dan menggabungkan mode numerik, alfanumerik QR, dan byte UTF-8 agar ukuran encoding lebih efisien. Logo otomatis menggunakan
+QR otomatis memilih dan menggabungkan mode numerik, alfanumerik QR, dan byte UTF-8 agar ukuran encoding lebih efisien.
+Logo otomatis menggunakan
 koreksi H dan versi yang menjaga pola fungsi QR di area tengah.
 
 ## Instalasi
@@ -78,4 +79,5 @@ koreksi.
 
 Dokumentasi lengkap: [Bahasa Indonesia](DOC.id.md) · [English](DOC.md) · [简体中文](DOC.zh.md).
 README: [English](README.md) · [简体中文](README.zh.md). Lisensi khusus source-available tetap berbahasa Inggris
-di [LICENSE](LICENSE). Lisensi itu bukan lisensi open-source yang disetujui OSI dan perlu tinjauan hukum sebelum rilis.
+di [LICENSE](LICENSE.md). Lisensi itu bukan lisensi open-source yang disetujui OSI dan perlu tinjauan hukum sebelum
+rilis.

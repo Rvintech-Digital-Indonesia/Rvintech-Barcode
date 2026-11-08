@@ -1,0 +1,24 @@
+# Local task notes and release instructions
+/TODO.md
+/PUBLISH.md
+
+# Go build outputs
+/bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.out
+coverage.html
+
+# Generated demo output
+/barcode-output/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

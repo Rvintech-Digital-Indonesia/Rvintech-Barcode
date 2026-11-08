@@ -5,7 +5,8 @@ import (
 	"github.com/Rvintech-Digital-Indonesia/Rvintech-Barcode/internal/symbol"
 )
 
-// Encode creates a QR Code Model 2 symbol in byte mode, versions 1 through 40.
+// Encode creates a QR Code Model 2 symbol using optimal Numeric, Alphanumeric,
+// and Byte segmentation for versions 1 through 40.
 func Encode(text string, options symbol.Options) (*symbol.Code, error) {
 	if text == "" {
 		return nil, symbol.ErrEmptyInput
@@ -31,15 +32,22 @@ func Encode(text string, options symbol.Options) (*symbol.Code, error) {
 		o.ErrorCorrection = symbol.ErrorCorrectionH
 	}
 	data := []byte(text)
-	segments, minBits := optimizeSegments(data, 1)
 	version := 0
-	for v := 1; v <= 40; v++ {
-		segments, minBits = optimizeSegments(data, v)
-		if minBits <= dataCodewords(v, level)*8 {
-			if o.Logo != nil && logoTouchesFunction(v, o.QuietZone) {
-				continue
+	var segments []segment
+	for _, group := range [][2]int{{1, 9}, {10, 26}, {27, 40}} {
+		// Segment costs depend only on the version's character-count widths.
+		// Reuse the optimal split for every version in this group.
+		groupSegments, minBits := optimizeSegments(data, group[0])
+		for v := group[0]; v <= group[1]; v++ {
+			if minBits <= dataCodewords(v, level)*8 {
+				if o.Logo != nil && logoTouchesFunction(v, o.QuietZone) {
+					continue
+				}
+				version, segments = v, groupSegments
+				break
 			}
-			version = v
+		}
+		if version != 0 {
 			break
 		}
 	}

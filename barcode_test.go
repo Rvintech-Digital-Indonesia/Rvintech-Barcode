@@ -133,14 +133,16 @@ func TestQRCapacityAndCorrectionLevels(t *testing.T) {
 			t.Fatalf("level %s: invalid width %d", level, code.Width())
 		}
 	}
-	code, err := EncodeQR(strings.Repeat("A", 2953), Options{})
+	// Lowercase forces Byte Mode, so this checks the version 40-L byte limit
+	// instead of the more compact Alphanumeric Mode capacity of uppercase text.
+	code, err := EncodeQR(strings.Repeat("a", 2953), Options{})
 	if err != nil {
 		t.Fatal(err)
 	}
 	if code.Width() != 177 {
 		t.Fatalf("maximum-capacity symbol width=%d, want 177", code.Width())
 	}
-	if _, err := EncodeQR(strings.Repeat("A", 2954), Options{}); err == nil {
+	if _, err := EncodeQR(strings.Repeat("a", 2954), Options{}); err == nil {
 		t.Fatal("over-capacity input accepted")
 	}
 }
@@ -179,5 +181,24 @@ func BenchmarkEncodeQR(b *testing.B) {
 		if _, err := EncodeQR("https://example.com/invoice/123456", Options{ErrorCorrection: ErrorCorrectionM}); err != nil {
 			b.Fatal(err)
 		}
+	}
+}
+
+func BenchmarkEncodeQRPayloadSizes(b *testing.B) {
+	for _, tc := range []struct {
+		name string
+		text string
+	}{
+		{"short", "hello 123"},
+		{"medium", strings.Repeat("invoice-1234567890-", 32)},
+		{"maximum", strings.Repeat("a", 2953)},
+	} {
+		b.Run(tc.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				if _, err := EncodeQR(tc.text, Options{}); err != nil {
+					b.Fatal(err)
+				}
+			}
+		})
 	}
 }

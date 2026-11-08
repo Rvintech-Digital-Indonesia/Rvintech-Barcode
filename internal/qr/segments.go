@@ -42,8 +42,82 @@ func payloadBits(mode, n int) int {
 		return n * 8
 	}
 }
+
+// minTree stores the best prefix cost at each quotient index. Separate trees
+// per residue make the numeric and alphanumeric payload cost separable into a
+// prefix-dependent term and a constant for the current endpoint.
+type minTree struct {
+	size  int
+	cost  []int
+	index []int
+}
+
+func newMinTree(n int) *minTree {
+	size := 1
+	for size < n {
+		size <<= 1
+	}
+	t := &minTree{size: size, cost: make([]int, size*2), index: make([]int, size*2)}
+	for i := range t.cost {
+		t.cost[i] = int(^uint(0)>>1) / 4
+		t.index[i] = -1
+	}
+	return t
+}
+
+func (t *minTree) update(pos, cost, index int) {
+	p := pos + t.size
+	if cost >= t.cost[p] {
+		return
+	}
+	t.cost[p], t.index[p] = cost, index
+	for p >>= 1; p > 0; p >>= 1 {
+		left, right := p*2, p*2+1
+		if t.cost[left] <= t.cost[right] {
+			t.cost[p], t.index[p] = t.cost[left], t.index[left]
+		} else {
+			t.cost[p], t.index[p] = t.cost[right], t.index[right]
+		}
+	}
+}
+
+func (t *minTree) query(left, right int) (int, int) {
+	best, index := int(^uint(0)>>1)/4, -1
+	for left, right = left+t.size, right+t.size; left < right; left, right = left>>1, right>>1 {
+		if left&1 != 0 {
+			if t.cost[left] < best {
+				best, index = t.cost[left], t.index[left]
+			}
+			left++
+		}
+		if right&1 != 0 {
+			right--
+			if t.cost[right] < best {
+				best, index = t.cost[right], t.index[right]
+			}
+		}
+	}
+	return best, index
+}
+
 func optimizeSegments(data []byte, version int) ([]segment, int) {
 	n := len(data)
+	if n == 0 {
+		return nil, 0
+	}
+	cwNumeric, cwAlpha, cwByte := countWidth(numericMode, version), countWidth(alphaMode, version), countWidth(byteMode, version)
+	maxNumeric, maxAlpha, maxByte := (1<<cwNumeric)-1, (1<<cwAlpha)-1, (1<<cwByte)-1
+	// Consecutive valid run lengths let each endpoint restrict queries without
+	// rescanning substrings.
+	numericRun, alphaRun := make([]int, n+1), make([]int, n+1)
+	for i := 0; i < n; i++ {
+		if data[i] >= '0' && data[i] <= '9' {
+			numericRun[i+1] = numericRun[i] + 1
+		}
+		if alphaIndex(data[i]) >= 0 {
+			alphaRun[i+1] = alphaRun[i] + 1
+		}
+	}
 	inf := int(^uint(0)>>1) / 4
 	cost := make([]int, n+1)
 	prev := make([]int, n+1)
@@ -51,43 +125,62 @@ func optimizeSegments(data []byte, version int) ([]segment, int) {
 	for i := 1; i <= n; i++ {
 		cost[i] = inf
 	}
-	for i := 0; i < n; i++ {
-		if cost[i] == inf {
-			continue
+	// For each mode and residue, maintain min(cost[i] - slope*floor(i/modulus)).
+	// Range minimum queries yield the exact optimal predecessor in O(log n).
+	trees := [3][3]*minTree{}
+	moduli := [3]int{3, 2, 1}
+	for m := range trees {
+		for r := 0; r < moduli[m]; r++ {
+			trees[m][r] = newMinTree(n/moduli[m] + 2)
 		}
-		for _, mode := range []int{numericMode, alphaMode, byteMode} {
-			cw := countWidth(mode, version)
-			maxCount := (1 << cw) - 1
-			for j := i + 1; j <= n; j++ {
-				l := j - i
-				if l > maxCount {
-					break
+	}
+	insert := func(i int) {
+		if cost[i] == inf {
+			return
+		}
+		trees[0][i%3].update(i/3, cost[i]-10*(i/3), i)
+		trees[1][i%2].update(i/2, cost[i]-11*(i/2), i)
+		trees[2][0].update(i, cost[i]-8*i, i)
+	}
+	insert(0)
+	for j := 1; j <= n; j++ {
+		consider := func(mode, treeMode, m, cw, maxCount, run int) {
+			low := j - maxCount
+			if minRun := j - run; minRun > low {
+				low = minRun
+			}
+			if low < 0 {
+				low = 0
+			}
+			if low >= j {
+				return
+			}
+			for residue := 0; residue < m; residue++ {
+				if j-1 < residue {
+					continue
 				}
-				valid := true
-				for _, b := range data[i:j] {
-					if mode == numericMode && (b < '0' || b > '9') {
-						valid = false
-						break
-					}
-					if mode == alphaMode && alphaIndex(b) < 0 {
-						valid = false
-						break
-					}
+				qLow := low / m
+				if low%m > residue {
+					qLow++
 				}
-				if !valid {
-					break
+				qHigh := (j - 1 - residue) / m
+				if qLow > qHigh {
+					continue
 				}
-				c := cost[i] + 4 + cw + payloadBits(mode, l)
+				_, i := trees[treeMode][residue].query(qLow, qHigh+1)
+				if i < 0 {
+					continue
+				}
+				c := cost[i] + 4 + cw + payloadBits(mode, j-i)
 				if c < cost[j] {
-					cost[j] = c
-					prev[j] = i
-					pmode[j] = mode
+					cost[j], prev[j], pmode[j] = c, i, mode
 				}
 			}
 		}
-	}
-	if n == 0 {
-		return nil, 0
+		consider(numericMode, 0, 3, cwNumeric, maxNumeric, numericRun[j])
+		consider(alphaMode, 1, 2, cwAlpha, maxAlpha, alphaRun[j])
+		consider(byteMode, 2, 1, cwByte, maxByte, j)
+		insert(j)
 	}
 	segs := []segment{}
 	for end := n; end > 0; {

@@ -52,7 +52,7 @@ Warna harus sepenuhnya opak. Foreground harus lebih gelap daripada background de
 
 ## Membuat QR Code
 
-`EncodeQR` membuat simbol QR Code Model 2 dalam byte mode, versi 1–40, dengan level koreksi L, M, Q, atau H. Versi terkecil yang memuat data dipilih otomatis. Teks diubah menjadi byte UTF-8. Kapasitas byte mode terbesar adalah 2.953 byte pada level L. Pemadatan mode numerik dan alfanumerik belum tersedia.
+`EncodeQR` membuat simbol QR Code Model 2 versi 1–40 dengan level L, M, Q, atau H. Encoder otomatis memilih segmentasi Numeric, Alphanumeric QR, dan Byte UTF-8 dengan panjang bit minimum, lalu memilih versi terkecil yang muat. Karakter di luar alfabet QR memakai Byte mode. Coba `go run ./examples/demo -format qr -text "123ABChello"` untuk menguji konten campuran.
 
 ```go
 code, err := barcode.EncodeQR("Halo, QR", barcode.Options{

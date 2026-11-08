@@ -52,7 +52,7 @@ type Options struct {
 
 ## 生成 QR Code
 
-`EncodeQR` 生成 QR Code Model 2 字节模式符号，支持版本 1–40 和纠错等级 L、M、Q、H，默认 L。编码器会选择能够容纳输入的最小版本。输入字符串按 UTF-8 转为字节。L 级字节模式最大容量为 2,953 字节；当前不使用数字或字母数字专用模式压缩数据。
+`EncodeQR` 生成 QR Code Model 2 符号，支持版本 1–40 和纠错等级 L、M、Q、H，默认 L。编码器会自动将内容分段为数字、QR 字母数字和 UTF-8 字节模式，并尽量减少编码位数，再选择能够容纳输入的最小版本。QR 字母数字模式仅适用于 QR 标准字符集；其他字符使用字节模式。字节计数基于 UTF-8 编码。L 级单字节模式的最大容量为 2,953 字节。运行 `go run ./examples/demo -format qr -text "123ABChello"` 可尝试混合内容。
 
 ```go
 code, err := barcode.EncodeQR("Hello, QR", barcode.Options{

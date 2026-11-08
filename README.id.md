@@ -10,12 +10,12 @@ Dikelola oleh PT Rvintech Digital Indonesia.
 
 | Format      | Dukungan                                                   |
 |-------------|------------------------------------------------------------|
-| QR Code     | Byte mode, versi 1–40, koreksi kesalahan L/M/Q/H           |
+| QR Code     | Segmentasi otomatis mode numerik, alfanumerik, dan byte UTF-8; versi 1–40, L/M/Q/H           |
 | Code 39     | Alfabet standar dan checksum modulo-43 opsional            |
 | Code 128    | ASCII, perpindahan otomatis Code Set A/B/C, checksum wajib |
 | PNG dan SVG | Semua format; logo QR disematkan dalam SVG                 |
 
-QR memakai byte mode, sehingga teks angka dan alfanumerik belum dipadatkan dengan mode khusus. Logo otomatis menggunakan
+QR otomatis memilih dan menggabungkan mode numerik, alfanumerik QR, dan byte UTF-8 agar ukuran encoding lebih efisien. Logo otomatis menggunakan
 koreksi H dan versi yang menjaga pola fungsi QR di area tengah.
 
 ## Instalasi

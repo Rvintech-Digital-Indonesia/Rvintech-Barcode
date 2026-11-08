@@ -31,13 +31,11 @@ func Encode(text string, options symbol.Options) (*symbol.Code, error) {
 		o.ErrorCorrection = symbol.ErrorCorrectionH
 	}
 	data := []byte(text)
+	segments, minBits := optimizeSegments(data, 1)
 	version := 0
 	for v := 1; v <= 40; v++ {
-		countBits := 8
-		if v >= 10 {
-			countBits = 16
-		}
-		if len(data) < 1<<countBits && 4+countBits+len(data)*8 <= dataCodewords(v, level)*8 {
+		segments, minBits = optimizeSegments(data, v)
+		if minBits <= dataCodewords(v, level)*8 {
 			if o.Logo != nil && logoTouchesFunction(v, o.QuietZone) {
 				continue
 			}
@@ -49,7 +47,7 @@ func Encode(text string, options symbol.Options) (*symbol.Code, error) {
 		return nil, fmt.Errorf("barcode: QR payload exceeds version 40 capacity at error correction level %s", o.ErrorCorrection)
 	}
 	capacity := dataCodewords(version, level)
-	all := interleave(qrDataCodewords(data, capacity, version), version, level)
+	all := interleave(encodeSegments(segments, capacity, version), version, level)
 	base, fn := qrBase(version)
 	bestScore := int(^uint(0) >> 1)
 	var best [][]bool

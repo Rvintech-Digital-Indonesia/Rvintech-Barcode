@@ -50,7 +50,7 @@ Zero values choose an 8-pixel module scale, four-module QR quiet zone (ten modul
 
 ## QR Code generation
 
-The QR implementation produces Model 2 byte-mode symbols across versions 1 through 40 and error-correction levels L, M, Q, and H. Level L is the default. It chooses the smallest version that fits. Input is UTF-8 encoded and QR byte count is based on encoded bytes. Numeric and alphanumeric mode compaction is not implemented. The largest byte-mode capacity is 2,953 bytes at level L.
+The QR implementation produces Model 2 symbols across versions 1 through 40 and error-correction levels L, M, Q, and H (L by default). It minimizes bit length by automatically segmenting input into Numeric, QR Alphanumeric, and UTF-8 Byte modes, and chooses the smallest version that fits. Characters outside the QR Alphanumeric set use Byte mode. Byte counts are UTF-8 byte counts; the maximum single-byte-mode payload is 2,953 bytes at level L. Use `go run ./examples/demo -format qr -text "123ABChello"` to exercise mixed content.
 
 ```go
 code, err := barcode.EncodeQR("Hello, QR", barcode.Options{})

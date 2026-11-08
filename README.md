@@ -6,7 +6,7 @@ module is maintained by PT Rvintech Digital Indonesia.
 The project implements barcode encoding and rendering itself. It uses Go's standard library for PNG output and PNG,
 JPEG, and GIF logo decoding. It requires no network access at runtime and has no third-party module dependencies.
 
-## Supported formats
+## Supported format
 
 | Format   | Current support                                                      |
 |----------|----------------------------------------------------------------------|

@@ -1,0 +1,91 @@
+name: Publish release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (for example v1.0.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Validate and publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Validate version
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          if [[ ! "$VERSION" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
+            echo "Invalid semantic version: $VERSION (expected vMAJOR.MINOR.PATCH)."
+            exit 1
+          fi
+          if [[ "$VERSION" =~ -[0-9A-Za-z-]*\.(0|[1-9][0-9]*) ]]; then
+            echo "Numeric prerelease identifiers cannot have leading zeroes."
+            exit 1
+          fi
+      - name: Check out current main commit
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          check-latest: true
+          cache: true
+      - name: Verify module configuration and dependencies
+        run: |
+          go mod verify
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+      - name: Check formatting
+        run: |
+          files="$(gofmt -l $(find . -name '*.go' -not -path './.git/*'))"
+          if [ -n "$files" ]; then printf '%s\n' "$files"; exit 1; fi
+      - name: Run tests and quality checks
+        run: |
+          go test ./...
+          go test -race ./...
+          go vet ./...
+      - name: Verify compilation
+        run: go build ./...
+      - name: Create tag and GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          commit="$(git rev-parse HEAD)"
+          if gh release view "$VERSION" --repo "$REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $VERSION already exists; refusing to overwrite it."
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION" >/dev/null 2>&1; then
+            git fetch origin "refs/tags/$VERSION:refs/tags/$VERSION"
+            existing="$(git rev-parse "$VERSION^{}")"
+            if [ "$existing" != "$commit" ]; then
+              echo "Tag $VERSION exists on a different commit; refusing to move it."
+              exit 1
+            fi
+            echo "Tag $VERSION already points to the verified main commit; resuming release creation."
+          else
+            git tag -a "$VERSION" -m "Release $VERSION" "$commit"
+            git push origin "refs/tags/$VERSION"
+          fi
+          args=(--repo "$REPOSITORY" --generate-notes --verify-tag)
+          if [[ "$VERSION" == *-* ]]; then args+=(--prerelease); fi
+          gh release create "$VERSION" "${args[@]}"
+          echo "Published $VERSION from $commit"
